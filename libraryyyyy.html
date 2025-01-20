@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="libraryApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Library Application</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body>
+  <div ng-controller="LibraryController">
+    <h1>Library Categories</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Book Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in library">
+          <td>{{ item.category }}</td>
+          <td><input type="number" ng-model="item.count"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Add New Category</h2>
+    <form ng-submit="addCategory()">
+      <label>
+        Category Name:
+        <input type="text" ng-model="newCategory.name" required>
+      </label>
+      <label>
+        Initial Book Count:
+        <input type="number" ng-model="newCategory.count" required>
+      </label>
+      <button type="submit">Add Category</button>
+    </form>
+    <p ng-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
+  </div>
+
+  <script>
+    angular.module('libraryApp', [])
+      .controller('LibraryController', ['$scope', function($scope) {
+        $scope.library = [
+          { category: 'Fiction', count: 120 },
+          { category: 'Non-Fiction', count: 80 },
+          { category: 'Science', count: 150 },
+          { category: 'Mathematics', count: 70 }
+        ];
+
+        $scope.newCategory = {};
+        $scope.errorMessage = '';
+
+        $scope.addCategory = function() {
+          const exists = $scope.library.some(item => item.category.toLowerCase() === $scope.newCategory.name.toLowerCase());
+          if (exists) {
+            $scope.errorMessage = 'Category name must be unique!';
+          } else {
+            $scope.library.push({ category: $scope.newCategory.name, count: $scope.newCategory.count });
+            $scope.newCategory = {};
+            $scope.errorMessage = '';
+          }
+        };
+      }]);
+  </script>
+</body>
+</html>
